@@ -10,6 +10,7 @@ DO NOT SHARE/DISTRIBUTE SOLUTIONS WITHOUT THE INSTRUCTOR'S PERMISSION
 
 import numpy as np
 from sklearn.preprocessing import normalize
+from generate import GENERATE
 
 #load the indices dictionary
 with open("word_to_index_100.txt", 'r') as f:
@@ -47,3 +48,8 @@ sentprob = np.asarray([np.prod([
 ])
 perplexity = 1/np.power(sentprob, 1/(np.asarray(list(map(len, toy))) - 1))
 np.savetxt("bigram_eval.txt", perplexity)
+
+with open("bigram_generation.txt", 'w') as f:
+    for _ in range(10):
+        f.write(GENERATE(w2i, probs, "bigram", 30, '<s>'))
+        f.write('\n')

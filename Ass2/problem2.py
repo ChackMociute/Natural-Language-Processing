@@ -38,3 +38,8 @@ np.savetxt("unigram_probs.txt", probs)
 sentprob = np.asarray([np.prod([probs[w2i[w]] for w in s]) for s in toy])
 perplexity = 1/np.power(sentprob, 1/np.asarray(list(map(len, toy))))
 np.savetxt("unigram_eval.txt", perplexity)
+
+with open("unigram_generation.txt", 'w') as f:
+    for _ in range(10):
+        f.write(GENERATE(w2i, probs, "unigram", 30, '<s>'))
+        f.write('\n')
