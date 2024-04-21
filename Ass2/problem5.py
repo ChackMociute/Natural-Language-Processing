@@ -16,7 +16,6 @@ def trigram_prob(c1, c2, w, smooth=False, a=0.1):
         print(f"Smoothed p({w}|{c1}, {c2})={(w_c + a) / (c_c + len(w2i) * a):.4f}")
     else:
         print(f"Unsmoothed p({w}|{c1}, {c2})={w_c / c_c:.4f}")
-        return w_c / c_c
 
 trigram_prob('in', 'the', 'past', smooth=False)
 trigram_prob('in', 'the', 'time', smooth=False)
