@@ -6,12 +6,12 @@ from nltk.corpus import brown
 
 
 def corpus_statistics(corpus, title, categories=None):
-    words = nltk.FreqDist(corpus.words(categories=categories))
-    types = nltk.FreqDist([x[1] for x in corpus.tagged_words(categories=categories)])
+    tokens = nltk.FreqDist(corpus.words(categories=categories))
+    words = nltk.FreqDist(w for w in corpus.words(categories=categories) if any(c.isalpha() for c in w))
     pos = nltk.FreqDist([x[1] for x in nltk.tag.pos_tag(brown.words(categories=categories))])
     print(title)
-    print(f"\tNumber of unique tokens: {words.B()}")
-    print(f"\tNumber of unique types: {types.B()}")
+    print(f"\tTotal number of tokens: {tokens.N()}")
+    print(f"\tNumber of unique tokens: {tokens.B()}")
     print(f"\tTotal number of words: {words.N()}")
     print(f"\tAverage number of words per sentence: {words.N() / len(corpus.sents(categories=categories)):.2f}")
     print(f"\tAverage number of characters per word: {sum(map(len, corpus.words(categories=categories))) / words.N():.2f}")
@@ -27,15 +27,16 @@ def plot(fq, ax, title, lin_axes=True):
 
 
 # Find word frequencies
-fq = nltk.FreqDist(brown.words(categories=None))
-fq_adv = nltk.FreqDist(brown.words(categories='adventure'))
-fq_news = nltk.FreqDist(brown.words(categories='news'))
+fq = nltk.FreqDist(w for w in brown.words(categories=None) if any(c.isalpha() for c in w))
+fq_adv = nltk.FreqDist(w for w in brown.words(categories='adventure') if any(c.isalpha() for c in w))
+fq_news = nltk.FreqDist(w for w in brown.words(categories='news') if any(c.isalpha() for c in w))
 
 print(f"Full corpus word frequencies:\n\t{repr(fq)}")
 print(f"Adventure category word frequencies:\n\t{repr(fq_adv)}")
 print(f"News category word frequencies:\n\t{repr(fq_news)}")
 
 # Print the required statistics
+print()
 corpus_statistics(brown, "Adventure category statistics", categories='adventure')
 print()
 corpus_statistics(brown, "News category statistics", categories='news')
