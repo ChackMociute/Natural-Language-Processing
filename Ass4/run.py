@@ -38,23 +38,10 @@ def train(parser, train_data, dev_data, output_path, batch_size=1024, n_epochs=1
     @param lr (float): Learning rate
     """
     best_dev_UAS = 0
+    
+    optimizer = optim.Adam([p for p in parser.model.parameters() if p.requires_grad], lr=3e-4, weight_decay=1e-4)
+    loss_func = nn.CrossEntropyLoss(reduction='mean')
 
-
-    ### YOUR CODE HERE (~2-7 lines)
-    ### TODO:
-    ###      1) Construct Adam Optimizer in variable `optimizer`
-    ###      2) Construct the Cross Entropy Loss Function in variable `loss_func` with `mean`
-    ###         reduction (default)
-    ###
-    ### Hint: Use `parser.model.parameters()` to pass optimizer
-    ###       necessary parameters to tune.
-    ### Please see the following docs for support:
-    ###     Adam Optimizer: https://pytorch.org/docs/stable/optim.html
-    ###     Cross Entropy Loss: https://pytorch.org/docs/stable/nn.html#crossentropyloss
-
-
-
-    ### END YOUR CODE
 
     for epoch in range(n_epochs):
         print("Epoch {:} out of {:}".format(epoch + 1, n_epochs))
@@ -92,23 +79,11 @@ def train_for_epoch(parser, train_data, dev_data, optimizer, loss_func, batch_si
             loss = 0. # store loss for this batch here
             train_x = torch.from_numpy(train_x).long()
             train_y = torch.from_numpy(train_y.nonzero()[1]).long()
-
-            ### YOUR CODE HERE (~4-10 lines)
-            ### TODO:
-            ###      1) Run train_x forward through model to produce `logits`
-            ###      2) Use the `loss_func` parameter to apply the PyTorch CrossEntropyLoss function.
-            ###         This will take `logits` and `train_y` as inputs. It will output the CrossEntropyLoss
-            ###         between softmax(`logits`) and `train_y`. Remember that softmax(`logits`)
-            ###         are the predictions (y^ from the PDF).
-            ###      3) Backprop losses
-            ###      4) Take step with the optimizer
-            ### Please see the following docs for support:
-            ###     Optimizer Step: https://pytorch.org/docs/stable/optim.html#optimizer-step
-
-
-
-
-            ### END YOUR CODE
+            
+            loss = loss_func(parser.model(train_x), train_y)
+            loss.backward()
+            optimizer.step()
+            
             prog.update(1)
             loss_meter.update(loss.item())
 
